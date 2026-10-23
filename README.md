@@ -53,7 +53,8 @@ A standalone, static, mobile-first HTML/CSS/JavaScript app. No Base44, servers, 
 node --test tests/rules.test.js
 python tests/browser_smoke.py
 python tests/gameplay_smoke.py
-python tests/offline_smoke.py`npython tests/visual_preview.py
+python tests/final_smoke.py
+python tests/offline_smoke.py
 ```
 
 Python browser tests use Playwright + a local Chrome installation. Run `python -m http.server 4186` before browser tests.
