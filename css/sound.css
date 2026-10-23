@@ -1,0 +1,14 @@
+
+.audio-panel{margin:20px 0 25px;padding:24px;position:relative;overflow:hidden}
+.audio-panel:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 88% 4%,rgba(67,181,255,.12),transparent 55%)}
+.audio-title{position:relative;font-size:clamp(16px,3vw,23px);letter-spacing:.12em;color:#c2ebff;font-weight:650;margin:16px 0 7px}
+.audio-desc{position:relative;font-size:13px;line-height:1.7;color:#8baac0;margin:0 0 23px}
+.audio-controls label{display:flex;justify-content:space-between;gap:12px;color:#a7dfff;letter-spacing:.08em;font-size:12px;font-weight:700;margin-bottom:12px}
+.audio-controls strong{color:#fff}
+#systemVolume{width:100%;min-height:32px;accent-color:#60c8ff;cursor:pointer}
+.audio-tests{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:19px 0}
+.audio-tests button{color:#b6edff;background:rgba(13,49,76,.58);border:1px solid rgba(95,194,255,.36);min-height:42px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.06em;transition:background .22s,border-color .22s,transform .22s,box-shadow .22s}
+.audio-tests button:hover,.audio-tests button:focus-visible{background:rgba(38,98,147,.48);border-color:#86deff;box-shadow:0 0 14px rgba(64,183,255,.20)}
+.audio-tests button:active{transform:scale(.96)}
+.audio-footnote{font-size:11px;color:#668baa;line-height:1.6;margin:8px 0 0}
+@media(max-width:600px){.audio-panel{padding:17px}.audio-tests{grid-template-columns:repeat(2,minmax(0,1fr))}.audio-tests button{font-size:10px}}
