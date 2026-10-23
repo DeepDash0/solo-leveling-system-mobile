@@ -10,6 +10,62 @@
   <meta name="format-detection" content="telephone=no" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/svg+xml" href="system-icon.svg" />
+  <style id="system-fx-css">
+/* THE SYSTEM / ENHANCED PLAYER UI — additive layer; existing UI remains intact. */
+:root{--fx-electric:#42bcff;--fx-pale:#c4f5ff}
+html{background:#020811}
+body::after{content:"";position:fixed;inset:0;z-index:39;pointer-events:none;opacity:.13;background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(130,222,255,.08) 4px,transparent 5px);mix-blend-mode:screen}
+.grid-bg{animation:system-ambient 16s ease-in-out infinite alternate}
+@keyframes system-ambient{from{filter:hue-rotate(-8deg) brightness(.85)}to{filter:hue-rotate(12deg) brightness(1.3)}}
+.panel,.gate-card,.item-card{transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .28s,box-shadow .3s;will-change:auto}
+.panel:hover,.gate-card:hover,.item-card:hover{border-color:rgba(116,214,255,.55);box-shadow:0 0 32px rgba(30,130,226,.12),inset 0 0 28px rgba(21,97,166,.055)}
+.gate-card:hover,.item-card:hover{transform:translateY(-3px)}
+.action-btn,.ghost-btn,.danger-btn,.plu,.dock-item,.nav-item,.settings-shortcut{position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.action-btn::after,.ghost-btn::after,.plu::after{content:"";position:absolute;inset:-2px;pointer-events:none;background:linear-gradient(100deg,transparent 30%,rgba(204,246,255,.16) 50%,transparent 70%);transform:translateX(-160%);transition:transform .6s ease}
+.action-btn:hover::after,.ghost-btn:hover::after,.plu:hover::after{transform:translateX(155%)}
+.action-btn:active,.ghost-btn:active,.plu:active,.dock-item:active{transform:scale(.965)}
+.nav-item.active,.dock-item.active{animation:system-tab-glow .45s ease}
+@keyframes system-tab-glow{0%{filter:brightness(1.8);box-shadow:0 0 21px rgba(97,203,255,.4)}100%{filter:brightness(1);}}
+.hologram{animation:holo-arrival .75s cubic-bezier(.17,.85,.26,1) both,holo-living 7s ease-in-out 1s infinite alternate}
+@keyframes holo-arrival{0%{transform:perspective(1000px) rotateX(5deg) translateY(15px);opacity:.08;filter:blur(6px)}100%{transform:none;opacity:1;filter:none}}
+@keyframes holo-living{from{box-shadow:inset 0 0 40px rgba(40,162,255,.04),0 0 12px rgba(30,110,220,.04)}to{box-shadow:inset 0 0 42px rgba(40,162,255,.1),0 0 28px rgba(30,110,220,.13)}}
+.profile-visual .emblem{animation:core-beat 4.4s ease-in-out infinite;transform-origin:center}
+@keyframes core-beat{0%,100%{filter:brightness(.95);text-shadow:0 0 27px #329eff}50%{filter:brightness(1.28);text-shadow:0 0 50px #81dfff,0 0 75px #238cf1}}
+.profile-visual .ring.outer{filter:drop-shadow(0 0 8px rgba(98,195,255,.32))}
+.bar>div,.progress-fill,.xp-fill{transition:width .7s cubic-bezier(.17,.85,.3,1);box-shadow:0 0 13px rgba(78,185,255,.26)}
+.gate-card{background-image:radial-gradient(circle at 78% 24%,rgba(25,112,204,.19),transparent 55%),linear-gradient(140deg,rgba(14,41,68,.91),rgba(3,11,25,.95))}
+.gate-card::before{content:"";position:absolute;right:9px;top:9px;width:70px;height:70px;border:1px solid rgba(104,206,255,.17);border-radius:50%;box-shadow:0 0 25px rgba(49,154,240,.12);animation:gate-pulse 3.3s ease-in-out infinite;pointer-events:none}
+@keyframes gate-pulse{0%,100%{transform:scale(.88);opacity:.38}50%{transform:scale(1.18);opacity:.84}}
+.view.active .panel,.view.active .gate-card,.view.active .item-card{animation:fx-reveal .55s both}
+.view.active .panel:nth-child(2),.view.active .gate-card:nth-child(2),.view.active .item-card:nth-child(2){animation-delay:.07s}
+.view.active .panel:nth-child(3),.view.active .gate-card:nth-child(3),.view.active .item-card:nth-child(3){animation-delay:.14s}
+@keyframes fx-reveal{from{opacity:0;transform:translateY(12px);filter:brightness(1.4) blur(4px)}to{opacity:1;transform:translateY(0);filter:none}}
+.fx-sound-btn{border:1px solid rgba(99,198,255,.48);border-radius:8px;min-height:38px;min-width:77px;display:flex;gap:6px;justify-content:center;align-items:center;color:#bcefff;background:linear-gradient(120deg,#0c2947,#061627);font-weight:700;font-size:10px;letter-spacing:1px;box-shadow:inset 0 0 13px #167ed015}
+.fx-sound-btn[aria-pressed="false"]{color:#7994aa;border-color:#31516b;box-shadow:none}
+.fx-sound-btn .sound-icon{font-size:15px}
+.fx-sound-btn:focus-visible{outline:2px solid #9be8ff;outline-offset:2px}
+.fx-screen-flash{position:fixed;inset:0;pointer-events:none;z-index:125;opacity:0;animation:fx-flash .55s ease-out forwards;background:radial-gradient(circle at center,rgba(130,226,255,.34),transparent 65%)}
+.fx-screen-flash.gold{background:radial-gradient(circle at center,rgba(255,210,117,.35),transparent 65%)}
+.fx-screen-flash.red{background:radial-gradient(circle at center,rgba(255,86,114,.31),transparent 68%)}
+@keyframes fx-flash{0%{opacity:0}17%{opacity:1}100%{opacity:0}}
+.fx-spark{position:fixed;pointer-events:none;width:5px;height:5px;z-index:140;border-radius:50%;background:#91e6ff;box-shadow:0 0 10px #4bbeff;animation:fx-fly .75s cubic-bezier(.2,.8,.3,1) forwards;transform:translate(-50%,-50%)}
+.fx-spark.gold{background:#ffe8ad;box-shadow:0 0 12px #ffcb68}
+.fx-spark.red{background:#ff7791;box-shadow:0 0 12px #fa4266}
+@keyframes fx-fly{0%{opacity:1;transform:translate(-50%,-50%) scale(.4)}35%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.1)}}
+.fx-hit{animation:fx-hit-anim .28s ease-out}
+@keyframes fx-hit-anim{0%{transform:translateX(0);filter:none}25%{transform:translateX(-5px);filter:brightness(2)}55%{transform:translateX(5px)}100%{transform:translateX(0);filter:none}}
+.fx-level-label{font-size:11px;letter-spacing:4px;color:#c3ecff;animation:fx-level-rune 1.3s infinite alternate}
+@keyframes fx-level-rune{from{text-shadow:0 0 8px #2597e9}to{text-shadow:0 0 24px #9fe6ff}}
+.overlay:not([hidden]) .overlay-window{animation:fx-overlay-summon .65s cubic-bezier(.16,.84,.22,1) both;position:relative;overflow:hidden}
+.overlay:not([hidden]) .overlay-window::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#dcf8ff,transparent);box-shadow:0 0 15px #47c3ff;animation:fx-scanner 2.5s linear infinite;pointer-events:none}
+@keyframes fx-overlay-summon{from{transform:scale(.82) perspective(700px) rotateX(11deg);opacity:0;filter:blur(9px)}to{transform:none;opacity:1;filter:none}}
+@keyframes fx-scanner{0%{top:0;opacity:.8}100%{top:100%;opacity:.1}}
+.toast{animation:fx-toast .43s cubic-bezier(.15,.8,.2,1) both;border-left:3px solid #93dfff}
+@keyframes fx-toast{from{opacity:0;transform:translateX(40px) scale(.94)}to{opacity:1;transform:none}}
+@media(max-width:760px){.fx-sound-btn{min-width:66px;min-height:36px;font-size:9px}.topbar-right{gap:7px}.panel:hover,.gate-card:hover,.item-card:hover{box-shadow:inset 0 0 28px rgba(40,128,255,.05)}.gate-card:hover,.item-card:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.grid-bg,.hologram,.profile-visual .emblem,.gate-card::before,.fx-spark,.fx-screen-flash,.toast,.view.active .panel,.view.active .gate-card,.view.active .item-card,.overlay:not([hidden]) .overlay-window,.overlay:not([hidden]) .overlay-window::before{animation:none!important;transition:none!important}.fx-spark,.fx-screen-flash{display:none}}
+
+</style>
   <meta name="description" content="An offline fan-made player progression system inspired by Solo Leveling." />
   <title>THE SYSTEM — Solo Leveling</title>
   <style>
@@ -343,6 +399,73 @@
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
 }
+
+</script>
+<script id="system-fx-js">
+/* THE SYSTEM — optional synthesized SFX and responsive combat/UI effects. No audio files or tracking. */
+(()=>{'use strict';
+const SETTINGS_KEY='the-system-audiovisual-v3';
+let enabled=true,ctx=null,lastOverlayTitle='',lastClick=0;
+try{let setting=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');enabled=setting.sound!==false}catch{}
+const reduce=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const save=()=>{try{localStorage.setItem(SETTINGS_KEY,JSON.stringify({sound:enabled}))}catch{}};
+function ensureAudio(){if(!enabled)return null;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return null;if(!ctx)ctx=new A();if(ctx.state==='suspended')ctx.resume().catch(()=>{});return ctx}catch{return null}}
+function tone(freq,duration=0.12,delay=0,shape='sine',vol=.024,endFreq){const ac=ensureAudio();if(!ac)return;
+  const now=ac.currentTime+delay,o=ac.createOscillator(),g=ac.createGain();o.type=shape;o.frequency.setValueAtTime(freq,now);if(endFreq)o.frequency.exponentialRampToValueAtTime(Math.max(30,endFreq),now+duration);
+  g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(vol,now+.012);g.gain.exponentialRampToValueAtTime(.0001,now+duration);
+  o.connect(g);g.connect(ac.destination);o.start(now);o.stop(now+duration+.02);
+}
+function noise(duration=.12,volume=.01,delay=0){const ac=ensureAudio();if(!ac)return;let frames=Math.round(ac.sampleRate*duration),buffer=ac.createBuffer(1,frames,ac.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<frames;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/frames,1.6);
+ const src=ac.createBufferSource(),gain=ac.createGain(),filter=ac.createBiquadFilter();src.buffer=buffer;filter.type='highpass';filter.frequency.value=670;gain.gain.value=volume;src.connect(filter);filter.connect(gain);gain.connect(ac.destination);src.start(ac.currentTime+delay)}
+function play(kind){if(!enabled)return;switch(kind){
+case 'nav':tone(510,.06,0,'triangle',.012,680);tone(880,.095,.055,'sine',.011);break;
+case 'point':tone(680,.11,0,'sine',.019,1250);tone(1320,.16,.085,'sine',.013);break;
+case 'quest':tone(460,.12,0,'triangle',.026);tone(640,.14,.11,'triangle',.025);tone(900,.28,.24,'sine',.027);break;
+case 'level':tone(300,.17,0,'sawtooth',.014,630);[440,554,659,880,1175].forEach((f,i)=>tone(f,.32+i*.035,i*.105,'triangle',.021));noise(.29,.008,.25);break;
+case 'gate':tone(230,.43,0,'sawtooth',.012,68);tone(385,.36,.07,'sine',.018,175);noise(.38,.009);break;
+case 'attack':noise(.13,.018);tone(196,.17,0,'sawtooth',.012,90);break;
+case 'skill':tone(750,.18,0,'sine',.024,1400);noise(.24,.014,.075);tone(1420,.28,.12,'triangle',.012,410);break;
+case 'damage':tone(175,.14,0,'sawtooth',.02,72);break;
+case 'victory':tone(540,.15,0,'triangle',.023);tone(725,.17,.13,'triangle',.026);tone(960,.43,.27,'sine',.027);break;
+case 'buy':tone(590,.12,0,'sine',.019);tone(925,.2,.09,'triangle',.023);break;
+case 'close':tone(750,.09,0,'sine',.012,340);break;
+case 'error':tone(250,.12,0,'triangle',.014,170);break;
+default:tone(620,.075,0,'sine',.012,810);
+}}
+function flash(type='blue'){if(reduce())return;const el=document.createElement('div');el.className='fx-screen-flash '+(type==='blue'?'':type);document.body.append(el);setTimeout(()=>el.remove(),650)}
+function sparks(x,y,type='blue',count=11){if(reduce())return;for(let i=0;i<count;i++){const ang=Math.random()*Math.PI*2,r=20+Math.random()*110;const s=document.createElement('i');s.className='fx-spark '+(type==='blue'?'':type);s.style.cssText=`left:${x}px;top:${y}px;--dx:${Math.cos(ang)*r}px;--dy:${Math.sin(ang)*r}px;animation-duration:${.45+Math.random()*.48}s;`;document.body.append(s);setTimeout(()=>s.remove(),1200)}}
+function center(el){let r=el?.getBoundingClientRect()||{left:innerWidth/2,top:innerHeight/2,width:0,height:0};return [r.left+r.width/2,r.top+r.height/2]}
+function shake(element){if(reduce()||!element)return;element.classList.remove('fx-hit');void element.offsetWidth;element.classList.add('fx-hit');setTimeout(()=>element.classList.remove('fx-hit'),380)}
+function updateToggle(){let b=document.getElementById('fxSoundToggle');if(!b)return;b.setAttribute('aria-pressed',String(enabled));b.title=enabled?'Sound effects on — tap to mute':'Sound effects off — tap to enable';b.innerHTML=`<span class="sound-icon" aria-hidden="true">${enabled?'♪':'♪̸'}</span><span>SFX ${enabled?'ON':'OFF'}</span>`}
+function createToggle(){const top=document.querySelector('.topbar-right');if(!top||document.getElementById('fxSoundToggle'))return;const b=document.createElement('button');b.id='fxSoundToggle';b.className='fx-sound-btn';b.type='button';b.setAttribute('aria-label','Toggle sound effects');top.insertBefore(b,top.firstChild);b.addEventListener('click',()=>{enabled=!enabled;save();updateToggle();if(enabled)play('point')});updateToggle()}
+function panelForCombat(){return document.getElementById('battlePanel')}
+function currentOverlay(){const overlay=document.getElementById('overlay');if(overlay?.hidden)return '';return document.getElementById('overlayTitle')?.textContent||''}
+function handleOverlay(){const title=currentOverlay();if(!title){lastOverlayTitle='';return}if(title===lastOverlayTitle)return;lastOverlayTitle=title;const level=/LEVEL UP/i.test(title),victory=/CLEARED|COMPLETE/i.test(title),fail=/FAILED/i.test(title);
+if(level){play('level');flash('gold');sparks(innerWidth/2,innerHeight/2,'gold',33)}else if(victory){play('victory');flash('blue');sparks(innerWidth/2,innerHeight/2,'blue',24)}else if(fail){play('damage');flash('red')}else{play('gate');flash()}
+}
+function clickActions(event){const el=event.target.closest('button,[data-go]');if(!el||el.disabled||el.id==='fxSoundToggle')return;const t=Date.now();if(t-lastClick<55)return;lastClick=t;
+ let type='click',burst=false,kind='blue';
+ if(el.dataset.view||el.dataset.go)type='nav';
+ else if(el.dataset.stat){type='point';burst=true}
+ else if(el.dataset.add){type='point';burst=true}
+ else if(el.dataset.gate){type='gate';flash()}
+ else if(el.dataset.combat){type=el.dataset.combat==='skill'?'skill':el.dataset.combat==='attack'?'attack':'close';if(el.dataset.combat!=='escape'){shake(panelForCombat());burst=true;kind=el.dataset.combat==='skill'?'blue':'red'}}
+ else if(el.dataset.buy){type='buy';burst=true;kind='gold'}
+ else if(el.dataset.use){type='point';burst=true}
+ else if(el.id==='claimQuest'){type='quest';burst=true;kind='gold';flash('gold')}
+ else if(el.id==='overlayClose'){type='close'}
+ else if(el.dataset.unequip){type='close'}
+ else if(el.id==='resetSave'){type='error'}
+ play(type);if(burst){const [x,y]=center(el);sparks(x,y,kind,kind==='gold'?17:9)}
+ setTimeout(handleOverlay,60)
+}
+function init(){createToggle();document.addEventListener('click',clickActions);
+ const ov=document.getElementById('overlay');if(ov){new MutationObserver(handleOverlay).observe(ov,{attributes:true,attributeFilter:['hidden'],subtree:true,childList:true,characterData:true});handleOverlay()}
+ const tabs=document.querySelectorAll('.dock-item');tabs.forEach(el=>el.addEventListener('focus',()=>{}));
+ document.addEventListener('visibilitychange',()=>{if(document.hidden&&ctx?.state==='running')ctx.suspend().catch(()=>{})});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
 
 </script>
 </body>
