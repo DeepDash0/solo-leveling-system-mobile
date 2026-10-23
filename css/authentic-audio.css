@@ -1,0 +1,20 @@
+/* Original-only sound source manager */
+#systemSoundPanel{margin:22px 0 26px;padding:23px;border-color:rgba(114,195,255,.29)}
+#systemSoundPanel .audio-desc{max-width:76ch}
+.auth-audio-list{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:17px 0 18px}
+.auth-audio-row{display:flex;justify-content:space-between;align-items:center;gap:11px;min-width:0;border:1px solid rgba(85,167,225,.22);background:rgba(7,28,58,.43);padding:12px 13px;border-radius:8px;transition:border-color .2s}
+.auth-audio-row:hover{border-color:rgba(108,214,255,.48)}
+.auth-audio-name{min-width:0}
+.auth-audio-name strong{display:block;font-size:11px;letter-spacing:.09em;color:#d0eeff}
+.auth-audio-name small{display:block;margin-top:7px;font-size:10px;max-width:100%;color:#7c98aa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.auth-audio-name .audio-ready{color:#6eeecb}
+.auth-audio-buttons{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.auth-audio-buttons button,.auth-audio-buttons .auth-import{display:inline-grid;place-items:center;padding:7px 10px;min-height:35px;cursor:pointer;color:#c6ebff;background:rgba(22,74,115,.43);border:1px solid rgba(112,187,251,.35);border-radius:5px;font-weight:750;font-size:10px;letter-spacing:.05em}
+.auth-audio-buttons button:disabled{opacity:.3;cursor:not-allowed}
+.auth-audio-buttons button:not(:disabled):hover,.auth-audio-buttons .auth-import:hover{background:rgba(39,132,181,.34);border-color:#86dcff}
+#systemSoundPanel .audio-footnote{line-height:1.8}
+#systemSoundPanel .audio-footnote a{color:#a6d8ff;text-decoration:underline;text-underline-offset:3px}
+#fxSoundToggle{white-space:nowrap}
+@media(max-width:1020px){.auth-audio-list{grid-template-columns:1fr}}
+@media(max-width:420px){#systemSoundPanel{padding:15px}.auth-audio-row{padding:11px 9px;gap:6px}.auth-audio-buttons{gap:4px}.auth-audio-buttons button,.auth-audio-buttons .auth-import{padding:6px 7px;font-size:9px}.auth-audio-name strong{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.auth-audio-row{transition:none}}
