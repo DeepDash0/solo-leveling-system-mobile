@@ -124,6 +124,22 @@ body::after{content:"";position:fixed;inset:0;z-index:39;pointer-events:none;opa
 
 </style>
 
+
+<style id="system-audio-v4-css">
+.audio-panel{margin:20px 0 25px;padding:24px;position:relative;overflow:hidden}
+.audio-panel:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 88% 4%,rgba(67,181,255,.12),transparent 55%)}
+.audio-title{position:relative;font-size:clamp(16px,3vw,23px);letter-spacing:.12em;color:#c2ebff;font-weight:650;margin:16px 0 7px}
+.audio-desc{position:relative;font-size:13px;line-height:1.7;color:#8baac0;margin:0 0 23px}
+.audio-controls label{display:flex;justify-content:space-between;gap:12px;color:#a7dfff;letter-spacing:.08em;font-size:12px;font-weight:700;margin-bottom:12px}
+.audio-controls strong{color:#fff}
+#systemVolume{width:100%;min-height:32px;accent-color:#60c8ff;cursor:pointer}
+.audio-tests{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:19px 0}
+.audio-tests button{color:#b6edff;background:rgba(13,49,76,.58);border:1px solid rgba(95,194,255,.36);min-height:42px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.06em;transition:background .22s,border-color .22s,transform .22s,box-shadow .22s}
+.audio-tests button:hover,.audio-tests button:focus-visible{background:rgba(38,98,147,.48);border-color:#86deff;box-shadow:0 0 14px rgba(64,183,255,.20)}
+.audio-tests button:active{transform:scale(.96)}
+.audio-footnote{font-size:11px;color:#668baa;line-height:1.6;margin:8px 0 0}
+@media(max-width:600px){.audio-panel{padding:17px}.audio-tests{grid-template-columns:repeat(2,minmax(0,1fr))}.audio-tests button{font-size:10px}}
+</style>
 </head>
 <body>
   <div class="grid-bg" aria-hidden="true"></div>
@@ -405,10 +421,10 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 /* THE SYSTEM — optional synthesized SFX and responsive combat/UI effects. No audio files or tracking. */
 (()=>{'use strict';
 const SETTINGS_KEY='the-system-audiovisual-v3';
-let enabled=true,ctx=null,lastOverlayTitle='',lastClick=0;
-try{let setting=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');enabled=setting.sound!==false}catch{}
+let enabled=true,ctx=null,lastOverlayTitle='',lastClick=0,volume=.78;
+try{let setting=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');enabled=setting.sound!==false;volume=Number.isFinite(setting.volume)?Math.min(1,Math.max(0,setting.volume)):.78}catch{}
 const reduce=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const save=()=>{try{localStorage.setItem(SETTINGS_KEY,JSON.stringify({sound:enabled}))}catch{}};
+const save=()=>{try{localStorage.setItem(SETTINGS_KEY,JSON.stringify({sound:enabled,volume}))}catch{}};
 function ensureAudio(){if(!enabled)return null;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return null;if(!ctx)ctx=new A();if(ctx.state==='suspended')ctx.resume().catch(()=>{});return ctx}catch{return null}}
 function tone(freq,duration=0.12,delay=0,shape='sine',vol=.024,endFreq){const ac=ensureAudio();if(!ac)return;
   const now=ac.currentTime+delay,o=ac.createOscillator(),g=ac.createGain();o.type=shape;o.frequency.setValueAtTime(freq,now);if(endFreq)o.frequency.exponentialRampToValueAtTime(Math.max(30,endFreq),now+duration);
@@ -417,21 +433,28 @@ function tone(freq,duration=0.12,delay=0,shape='sine',vol=.024,endFreq){const ac
 }
 function noise(duration=.12,volume=.01,delay=0){const ac=ensureAudio();if(!ac)return;let frames=Math.round(ac.sampleRate*duration),buffer=ac.createBuffer(1,frames,ac.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<frames;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/frames,1.6);
  const src=ac.createBufferSource(),gain=ac.createGain(),filter=ac.createBiquadFilter();src.buffer=buffer;filter.type='highpass';filter.frequency.value=670;gain.gain.value=volume;src.connect(filter);filter.connect(gain);gain.connect(ac.destination);src.start(ac.currentTime+delay)}
-function play(kind){if(!enabled)return;switch(kind){
-case 'nav':tone(510,.06,0,'triangle',.012,680);tone(880,.095,.055,'sine',.011);break;
-case 'point':tone(680,.11,0,'sine',.019,1250);tone(1320,.16,.085,'sine',.013);break;
-case 'quest':tone(460,.12,0,'triangle',.026);tone(640,.14,.11,'triangle',.025);tone(900,.28,.24,'sine',.027);break;
-case 'level':tone(300,.17,0,'sawtooth',.014,630);[440,554,659,880,1175].forEach((f,i)=>tone(f,.32+i*.035,i*.105,'triangle',.021));noise(.29,.008,.25);break;
-case 'gate':tone(230,.43,0,'sawtooth',.012,68);tone(385,.36,.07,'sine',.018,175);noise(.38,.009);break;
-case 'attack':noise(.13,.018);tone(196,.17,0,'sawtooth',.012,90);break;
-case 'skill':tone(750,.18,0,'sine',.024,1400);noise(.24,.014,.075);tone(1420,.28,.12,'triangle',.012,410);break;
-case 'damage':tone(175,.14,0,'sawtooth',.02,72);break;
-case 'victory':tone(540,.15,0,'triangle',.023);tone(725,.17,.13,'triangle',.026);tone(960,.43,.27,'sine',.027);break;
-case 'buy':tone(590,.12,0,'sine',.019);tone(925,.2,.09,'triangle',.023);break;
-case 'close':tone(750,.09,0,'sine',.012,340);break;
-case 'error':tone(250,.12,0,'triangle',.014,170);break;
-default:tone(620,.075,0,'sine',.012,810);
-}}
+const SOUND_NAMES=new Set(['click','nav','point','quest','level','gate','attack','skill','damage','victory','buy','close','error','welcome']);
+const banks=new Map();
+function play(kind){
+ if(!enabled||volume<.001)return;
+ const name=SOUND_NAMES.has(kind)?kind:'click';
+ try{
+  let pool=banks.get(name);
+  if(!pool){pool=[];banks.set(name,pool)}
+  let sound=pool.find(a=>a.paused||a.ended);
+  if(!sound && pool.length<3){
+    sound=new Audio('./sounds/'+name+'.wav?v=4');
+    sound.preload='auto';pool.push(sound);
+  }
+  if(!sound)sound=pool[0];
+  if(!sound.paused)sound.pause();
+  try{sound.currentTime=0}catch{}
+  const rel=name==='click'?.30:name==='nav'?.43:name==='close'?.57:name==='attack'?.78:.90;
+  sound.volume=Math.max(0,Math.min(1,volume*rel));
+  const task=sound.play();
+  if(task && task.catch)task.catch(()=>{});
+ }catch(err){console.warn('System SFX unavailable',err)}
+}
 function flash(type='blue'){if(reduce())return;const el=document.createElement('div');el.className='fx-screen-flash '+(type==='blue'?'':type);document.body.append(el);setTimeout(()=>el.remove(),650)}
 function sparks(x,y,type='blue',count=11){if(reduce())return;for(let i=0;i<count;i++){const ang=Math.random()*Math.PI*2,r=20+Math.random()*110;const s=document.createElement('i');s.className='fx-spark '+(type==='blue'?'':type);s.style.cssText=`left:${x}px;top:${y}px;--dx:${Math.cos(ang)*r}px;--dy:${Math.sin(ang)*r}px;animation-duration:${.45+Math.random()*.48}s;`;document.body.append(s);setTimeout(()=>s.remove(),1200)}}
 function center(el){let r=el?.getBoundingClientRect()||{left:innerWidth/2,top:innerHeight/2,width:0,height:0};return [r.left+r.width/2,r.top+r.height/2]}
@@ -440,10 +463,10 @@ function updateToggle(){let b=document.getElementById('fxSoundToggle');if(!b)ret
 function createToggle(){const top=document.querySelector('.topbar-right');if(!top||document.getElementById('fxSoundToggle'))return;const b=document.createElement('button');b.id='fxSoundToggle';b.className='fx-sound-btn';b.type='button';b.setAttribute('aria-label','Toggle sound effects');top.insertBefore(b,top.firstChild);b.addEventListener('click',()=>{enabled=!enabled;save();updateToggle();if(enabled)play('point')});updateToggle()}
 function panelForCombat(){return document.getElementById('battlePanel')}
 function currentOverlay(){const overlay=document.getElementById('overlay');if(overlay?.hidden)return '';return document.getElementById('overlayTitle')?.textContent||''}
-function handleOverlay(){const title=currentOverlay();if(!title){lastOverlayTitle='';return}if(title===lastOverlayTitle)return;lastOverlayTitle=title;const level=/LEVEL UP/i.test(title),victory=/CLEARED|COMPLETE/i.test(title),fail=/FAILED/i.test(title);
-if(level){play('level');flash('gold');sparks(innerWidth/2,innerHeight/2,'gold',33)}else if(victory){play('victory');flash('blue');sparks(innerWidth/2,innerHeight/2,'blue',24)}else if(fail){play('damage');flash('red')}else{play('gate');flash()}
+function handleOverlay(){const title=currentOverlay();if(!title){lastOverlayTitle='';return}if(title===lastOverlayTitle)return;lastOverlayTitle=title;const level=/LEVEL UP/i.test(title),victory=/CLEARED|COMPLETE/i.test(title),fail=/FAILED/i.test(title),welcome=/YOU HAVE BECOME|PLAYER ACCEPTED|SYSTEM RESET/i.test(title);
+if(level){play('level');flash('gold');sparks(innerWidth/2,innerHeight/2,'gold',33)}else if(victory){play('victory');flash('blue');sparks(innerWidth/2,innerHeight/2,'blue',24)}else if(fail){play('damage');flash('red')}else if(welcome){play('welcome');flash();sparks(innerWidth/2,innerHeight/2,'blue',22)}else{play('gate');flash()}
 }
-function clickActions(event){const el=event.target.closest('button,[data-go]');if(!el||el.disabled||el.id==='fxSoundToggle')return;const t=Date.now();if(t-lastClick<55)return;lastClick=t;
+function clickActions(event){const el=event.target.closest('button,[data-go]');if(!el||el.disabled||el.id==='fxSoundToggle'||el.closest('#systemSoundPanel'))return;const t=Date.now();if(t-lastClick<55)return;lastClick=t;
  let type='click',burst=false,kind='blue';
  if(el.dataset.view||el.dataset.go)type='nav';
  else if(el.dataset.stat){type='point';burst=true}
@@ -459,7 +482,31 @@ function clickActions(event){const el=event.target.closest('button,[data-go]');i
  play(type);if(burst){const [x,y]=center(el);sparks(x,y,kind,kind==='gold'?17:9)}
  setTimeout(handleOverlay,60)
 }
-function init(){createToggle();document.addEventListener('click',clickActions);
+function initSoundPanel(){
+ const section=document.getElementById('view-settings');if(!section||document.getElementById('systemSoundPanel'))return;
+ const panel=document.createElement('section');panel.id='systemSoundPanel';panel.className='panel audio-panel hologram';
+ panel.setAttribute('aria-label','System sound pack');
+ panel.innerHTML='<div class="panel-label">SYSTEM AUDIO <span>ANIME-INSPIRED V4</span></div>'+
+ '<h2 class="audio-title">THE SYSTEM · SOUND PACK</h2><p class="audio-desc">Original cinematic holographic notification sounds. Preview a sound or change the volume below.</p>'+
+ '<div class="audio-controls"><label for="systemVolume">MASTER SFX VOLUME <strong id="systemVolumeLabel"></strong></label><input aria-label="Sound effects volume" id="systemVolume" type="range" min="0" max="100" step="5"></div>'+
+ '<div class="audio-tests">'+
+ '<button type="button" data-preview-sound="welcome">✦ AWAKENING</button>'+
+ '<button type="button" data-preview-sound="quest">◈ QUEST</button>'+
+ '<button type="button" data-preview-sound="level">↑ LEVEL UP</button>'+
+ '<button type="button" data-preview-sound="gate">◇ GATE</button>'+
+ '<button type="button" data-preview-sound="skill">⚔ SKILL</button>'+
+ '<button type="button" data-preview-sound="victory">✧ VICTORY</button>'+
+ '</div><p class="audio-footnote">Tap SFX ON/OFF in the header to mute. Sounds play after your first interaction on mobile.</p>';
+ const head=section.querySelector('.page-head');
+ if(head)head.insertAdjacentElement('afterend',panel);else section.prepend(panel);
+ const slider=panel.querySelector('#systemVolume'),label=panel.querySelector('#systemVolumeLabel');
+ const sync=()=>{slider.value=String(Math.round(volume*100));label.textContent=Math.round(volume*100)+'%'};
+ slider.addEventListener('input',()=>{volume=Number(slider.value)/100;save();sync()});
+ slider.addEventListener('change',()=>{if(enabled)play('point')});
+ panel.querySelectorAll('[data-preview-sound]').forEach(button=>button.addEventListener('click',()=>play(button.dataset.previewSound)));
+ sync();
+}
+function init(){createToggle();initSoundPanel();document.addEventListener('click',clickActions);
  const ov=document.getElementById('overlay');if(ov){new MutationObserver(handleOverlay).observe(ov,{attributes:true,attributeFilter:['hidden'],subtree:true,childList:true,characterData:true});handleOverlay()}
  const tabs=document.querySelectorAll('.dock-item');tabs.forEach(el=>el.addEventListener('focus',()=>{}));
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&ctx?.state==='running')ctx.suspend().catch(()=>{})});
